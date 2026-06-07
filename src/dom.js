@@ -6,8 +6,11 @@ function getAppElements() {
         diskCountLabel: document.getElementById('diskCountLabel'),
         diskCount: document.getElementById('diskCount'),
         generateBtn: document.getElementById('generateBtn'),
+        configStatusHint: document.getElementById('configStatusHint'),
         modeHint: document.getElementById('modeHint'),
         lockContainer: document.getElementById('lockContainer'),
+        dependencyStatusTitle: document.getElementById('dependencyStatusTitle'),
+        dependencyStatus: document.getElementById('dependencyStatus'),
         solveBtn: document.getElementById('solveBtn'),
         prevStepBtn: document.getElementById('prevStepBtn'),
         nextStepBtn: document.getElementById('nextStepBtn'),
@@ -33,6 +36,61 @@ function renderLanguageButtons(currentLang) {
     const elements = getAppElements();
     elements.langBtnDe.classList.toggle('active', currentLang === 'de');
     elements.langBtnEn.classList.toggle('active', currentLang === 'en');
+}
+
+function renderConfigStatusHint(showHint, currentLang, translations) {
+    const { configStatusHint } = getAppElements();
+    if (!configStatusHint) {
+        return;
+    }
+
+    configStatusHint.innerText = showHint ? translations[currentLang].configChangedHint : '';
+    configStatusHint.classList.toggle('visible', showHint);
+}
+
+function renderDependencyStatus(dependencies, currentLang, translations) {
+    const t = translations[currentLang];
+    const { dependencyStatusTitle, dependencyStatus } = getAppElements();
+    if (!dependencyStatusTitle || !dependencyStatus) {
+        return;
+    }
+
+    dependencyStatusTitle.innerText = t.dependencyStatusTitle;
+
+    const masterIndexes = Object.keys(dependencies)
+        .map((key) => Number.parseInt(key, 10))
+        .filter((index) => Number.isFinite(index))
+        .sort((a, b) => b - a);
+
+    if (masterIndexes.length === 0) {
+        dependencyStatus.innerText = '';
+        return;
+    }
+
+    const lines = masterIndexes.map((masterIdx) => {
+        const masterDeps = dependencies[masterIdx] || {};
+        const parts = [];
+        const slaveIndexes = [...masterIndexes].sort((a, b) => a - b);
+
+        for (const slaveIdx of slaveIndexes) {
+            if (slaveIdx === masterIdx) {
+                continue;
+            }
+
+            const value = masterDeps[slaveIdx] || 0;
+            if (value === 0) {
+                continue;
+            }
+
+            const signedValue = value > 0 ? `+${value}` : `${value}`;
+            parts.push(`S${slaveIdx + 1}:${signedValue}`);
+        }
+
+        const summary = parts.length > 0 ? parts.join(', ') : t.dependencyStatusNone;
+        return `S${masterIdx + 1} -> ${summary}`;
+    });
+
+    dependencyStatus.innerText = lines.join('\n');
 }
 
 function renderModeHint(currentMasterIdx, currentLang, translations) {
@@ -240,6 +298,8 @@ window.domHelpers = {
     getAppElements,
     renderStaticText,
     renderLanguageButtons,
+    renderConfigStatusHint,
+    renderDependencyStatus,
     renderModeHint,
     renderOutput,
     renderDiskLabels,

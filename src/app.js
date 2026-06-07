@@ -7,8 +7,11 @@ let isPlaybackRunning = false;
 let playbackToken = 0;
 let playbackStates = [];
 let playbackStepIndex = 0;
+let playbackResetTimerId = null;
+let configNeedsRecalculation = false;
 
 const PLAYBACK_STEP_DELAY_MS = 450;
+const PLAYBACK_RESET_DELAY_MS = 1200;
 
 function getDefaultLanguage() {
     const browserLanguage = (navigator.languages && navigator.languages[0]) || navigator.language || 'en';
@@ -53,8 +56,38 @@ function renderDiskLabels() {
     dom.renderDiskLabels(state.disks, state.currentMasterIdx, currentLang, translations);
 }
 
+function renderConfigStatusHint() {
+    dom.renderConfigStatusHint(configNeedsRecalculation, currentLang, translations);
+}
+
+function renderDependencyStatus() {
+    dom.renderDependencyStatus(state.dependencies, currentLang, translations);
+}
+
 function wait(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function clearScheduledPlaybackReset() {
+    if (playbackResetTimerId !== null) {
+        clearTimeout(playbackResetTimerId);
+        playbackResetTimerId = null;
+    }
+}
+
+function schedulePlaybackReset(runToken) {
+    clearScheduledPlaybackReset();
+
+    playbackResetTimerId = setTimeout(() => {
+        playbackResetTimerId = null;
+
+        if (runToken !== playbackToken || isPlaybackRunning || !isPlayableSolution()) {
+            return;
+        }
+
+        applyPlaybackStepView(0);
+        renderPlaybackControls();
+    }, PLAYBACK_RESET_DELAY_MS);
 }
 
 function isPlayableSolution() {
@@ -250,11 +283,15 @@ async function playSolution() {
         return;
     }
 
+    clearScheduledPlaybackReset();
+
     const runToken = ++playbackToken;
     setPlaybackUiState(true);
+    let completedNaturally = true;
 
     for (let nextStepIndex = playbackStepIndex + 1; nextStepIndex <= getPlaybackStepCount(); nextStepIndex++) {
         if (runToken !== playbackToken) {
+            completedNaturally = false;
             break;
         }
 
@@ -264,6 +301,10 @@ async function playSolution() {
     }
 
     setPlaybackUiState(false);
+
+    if (completedNaturally && runToken === playbackToken && playbackStepIndex >= getPlaybackStepCount()) {
+        schedulePlaybackReset(runToken);
+    }
 }
 
 function pauseSolution() {
@@ -271,6 +312,7 @@ function pauseSolution() {
         return;
     }
 
+    clearScheduledPlaybackReset();
     playbackToken += 1;
     setPlaybackUiState(false);
 }
@@ -289,6 +331,7 @@ function stepForward() {
         return;
     }
 
+    clearScheduledPlaybackReset();
     applyPlaybackStepView(playbackStepIndex + 1);
     renderPlaybackControls();
 }
@@ -298,6 +341,7 @@ function stepBackward() {
         return;
     }
 
+    clearScheduledPlaybackReset();
     applyPlaybackStepView(playbackStepIndex - 1);
     renderPlaybackControls();
 }
@@ -306,7 +350,17 @@ function hasCalculatedOutput() {
     return state.outputState.type !== 'default';
 }
 
+function markConfigurationChangedIfCalculated() {
+    if (!hasCalculatedOutput()) {
+        return;
+    }
+
+    configNeedsRecalculation = true;
+    renderConfigStatusHint();
+}
+
 function resetCalculatedOutput() {
+    clearScheduledPlaybackReset();
     playbackToken += 1;
     clearPlaybackHighlights();
     playbackStates = [];
@@ -317,15 +371,6 @@ function resetCalculatedOutput() {
     stateManager.setOutputState(state, { type: 'default', solution: [] });
     renderOutput();
     renderPlaybackControls();
-}
-
-function confirmOutputResetIfNeeded() {
-    if (!hasCalculatedOutput()) {
-        return true;
-    }
-
-    const t = translations[currentLang];
-    return confirm(t.confirmResetOnConfigChange);
 }
 
 function bindStaticEvents() {
@@ -350,12 +395,14 @@ function changeLanguage(lang) {
     renderModeHint();
     renderOutput();
     renderPlaybackControls();
+    renderConfigStatusHint();
+    renderDependencyStatus();
 }
 
 function initLock() {
-    if (!confirmOutputResetIfNeeded()) {
-        return;
-    }
+    markConfigurationChangedIfCalculated();
+
+    clearScheduledPlaybackReset();
 
     const count = getRequestedDiskCount();
     const container = dom.getAppElements().lockContainer;
@@ -374,6 +421,7 @@ function initLock() {
 
     renderDiskLabels();
     dom.renderEditMode(state.disks, state.currentMasterIdx, currentLang, translations, state.dependencies);
+    renderDependencyStatus();
     renderModeHint();
     renderOutput();
     renderPlaybackControls();
@@ -384,9 +432,7 @@ function setDiskPosition(diskIdx, position) {
         return;
     }
 
-    if (!confirmOutputResetIfNeeded()) {
-        return;
-    }
+    markConfigurationChangedIfCalculated();
 
     if (!stateManager.setDiskPosition(state, diskIdx, position)) {
         return;
@@ -403,6 +449,7 @@ function toggleEditMode(masterIdx) {
     dom.renderEditMode(state.disks, state.currentMasterIdx, currentLang, translations, state.dependencies);
 
     renderModeHint();
+    renderDependencyStatus();
 }
 
 function setDependencyValue(slaveIdx, value) {
@@ -415,9 +462,7 @@ function setDependencyValue(slaveIdx, value) {
         return;
     }
 
-    if (!confirmOutputResetIfNeeded()) {
-        return;
-    }
+    markConfigurationChangedIfCalculated();
 
     if (!stateManager.setDependencyValue(state, slaveIdx, value)) {
         return;
@@ -426,6 +471,7 @@ function setDependencyValue(slaveIdx, value) {
     resetCalculatedOutput();
 
     updateDepButtonUI(slaveIdx, value);
+    renderDependencyStatus();
 }
 
 function updateDepButtonUI(slaveIdx, activeValue) {
@@ -433,6 +479,8 @@ function updateDepButtonUI(slaveIdx, activeValue) {
 }
 
 function calculateRoute() {
+    clearScheduledPlaybackReset();
+
     const t = translations[currentLang];
     if (state.currentMasterIdx !== null) {
         alert(t.alertEditMode);
@@ -440,12 +488,14 @@ function calculateRoute() {
     }
 
     stateManager.setOutputState(state, window.solveLock(state.disks, state.dependencies));
+    configNeedsRecalculation = false;
 
     rebuildPlaybackStates();
     applyPlaybackStepView(0);
 
     renderOutput();
     renderPlaybackControls();
+    renderConfigStatusHint();
 }
 
 bindStaticEvents();
