@@ -112,6 +112,12 @@ button:disabled {
     background-color: #17252a;
 }
 
+.disk-row.play-active {
+    border-color: #ff3b30;
+    background-color: #321717;
+    box-shadow: 0 0 10px rgba(255, 59, 48, 0.45);
+}
+
 .disk-label {
     width: 90px;
     font-weight: bold;
@@ -145,6 +151,13 @@ button:disabled {
     color: black;
     border-color: #fff;
     box-shadow: 0 0 8px var(--accent-color);
+}
+
+.circle.playback-active {
+    background-color: #47c9ff;
+    color: #00151f;
+    border-color: #dff6ff;
+    box-shadow: 0 0 8px #47c9ff;
 }
 
 .circle.target {
@@ -202,6 +215,69 @@ button:disabled {
     color: black;
 }
 
+.play-row {
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.play-btn {
+    background: #3b3b3b;
+    color: #f3f3f3;
+    font-size: 18px;
+    line-height: 1;
+    padding: 8px 10px;
+    min-width: 42px;
+}
+
+.step-btn {
+    min-width: 42px;
+    padding: 8px 10px;
+    font-size: 18px;
+    line-height: 1;
+}
+
+.auto-play-btn {
+    min-width: 140px;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 8px 12px;
+}
+
+.double-play-icon {
+    display: inline-flex;
+    align-items: center;
+}
+
+.double-play-icon .tri {
+    font-size: 14px;
+    line-height: 1;
+}
+
+.double-play-icon .tri + .tri {
+    margin-left: -5px;
+}
+
+.pause-icon {
+    font-size: 13px;
+    letter-spacing: 1px;
+    font-weight: 700;
+}
+
+.auto-play-label {
+    flex: 1;
+    text-align: right;
+}
+
+.play-btn:hover {
+    background: #575757;
+    color: #ffffff;
+}
+
 #output {
     margin-top: 20px;
     background: #111;
@@ -217,4 +293,10 @@ button:disabled {
     margin-top: 12px;
     color: #9fd3ff;
     font-size: 14px;
+}
+
+#lockContainer.playback-running .circle,
+#lockContainer.playback-running .edit-btn,
+#lockContainer.playback-running .dep-btn {
+    pointer-events: none;
 }

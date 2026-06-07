@@ -9,6 +9,9 @@ function getAppElements() {
         modeHint: document.getElementById('modeHint'),
         lockContainer: document.getElementById('lockContainer'),
         solveBtn: document.getElementById('solveBtn'),
+        prevStepBtn: document.getElementById('prevStepBtn'),
+        nextStepBtn: document.getElementById('nextStepBtn'),
+        playBtn: document.getElementById('playBtn'),
         solutionTitle: document.getElementById('solutionTitle'),
         output: document.getElementById('output')
     };

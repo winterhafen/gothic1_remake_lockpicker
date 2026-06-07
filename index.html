@@ -15,12 +15,12 @@
 
 
 <div class="container">
-    <h1 id="pageTitle">Gothic 1 Remake - Schloss-Knacker</h1>
+    <h1 id="pageTitle"></h1>
     
     <div class="setup-row">
-        <label id="diskCountLabel" for="diskCount">Anzahl Scheiben:</label>
+        <label id="diskCountLabel" for="diskCount"></label>
         <input type="number" id="diskCount" value="4" min="1" max="10">
-        <button id="generateBtn">Schloss generieren</button>
+        <button id="generateBtn"></button>
     </div>
 
     <div id="modeHint"></div>
@@ -28,12 +28,19 @@
     <div id="lockContainer"></div>
 
     <div style="margin-top: 25px;">
-        <button id="solveBtn" style="font-size: 18px; width: 100%; padding: 12px;">Lösung berechnen</button>
+        <button id="solveBtn" style="font-size: 18px; width: 100%; padding: 12px;"></button>
     </div>
 
-    <h3 id="solutionTitle">Lösungsweg:</h3>
-    <div id="output">Klicke auf "Lösung berechnen", um die Kombination zu sehen...</div>
+    <div class="play-row">
+        <button id="prevStepBtn" class="play-btn step-btn" style="display: none;"></button>
+        <button id="playBtn" class="play-btn auto-play-btn" style="display: none;"></button>
+        <button id="nextStepBtn" class="play-btn step-btn" style="display: none;"></button>
+    </div>
+
+    <h3 id="solutionTitle"></h3>
+    <div id="output"></div>
 </div>
+
 
 <script src="src/translations.js"></script>
 <script src="src/solver.js"></script>
