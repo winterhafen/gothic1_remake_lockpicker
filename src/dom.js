@@ -78,7 +78,7 @@ function formatRepeatText(currentLang, count, translations) {
             2: 'zweimal',
             3: 'dreimal',
             4: 'viermal',
-            5: 'fuenfmal',
+            5: 'fünfmal',
             6: 'sechsmal',
             7: 'siebenmal',
             8: 'achtmal',
