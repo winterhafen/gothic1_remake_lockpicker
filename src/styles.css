@@ -1,0 +1,220 @@
+:root {
+    --bg-color: #1a1a1a;
+    --panel-color: #2a2a2a;
+    --accent-color: #d4af37;
+    --text-color: #ffffff;
+    --active-color: #4a3728;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1,
+h3 {
+    color: var(--accent-color);
+    margin-bottom: 10px;
+}
+
+.container {
+    background-color: var(--panel-color);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    max-width: 800px;
+    width: 100%;
+}
+
+.setup-row {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+input[type="number"] {
+    background: #333;
+    border: 1px solid var(--accent-color);
+    color: #fff;
+    padding: 8px;
+    border-radius: 4px;
+    width: 60px;
+    font-size: 16px;
+}
+
+button {
+    background-color: var(--accent-color);
+    color: #000;
+    border: none;
+    padding: 10px 15px;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+button:hover {
+    background-color: #fff;
+}
+
+.edit-btn:hover,
+.dep-btn:hover,
+.lang-btn:hover {
+    background: #5a5a5a;
+    color: white;
+}
+
+.edit-btn.active:hover {
+    background: #00ff00;
+    color: black;
+}
+
+.dep-btn.selected:hover {
+    background: #33a6cc;
+    color: white;
+}
+
+.lang-btn.active:hover {
+    background-color: var(--accent-color);
+    color: black;
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.disk-row {
+    display: flex;
+    align-items: center;
+    background: #222;
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 6px;
+    border: 1px solid #444;
+    transition: all 0.3s;
+}
+
+.disk-row.edit-master {
+    border-color: #00ff00;
+    background-color: #1b2e1b;
+}
+
+.disk-row.edit-slave {
+    border-color: #33a6cc;
+    background-color: #17252a;
+}
+
+.disk-label {
+    width: 90px;
+    font-weight: bold;
+}
+
+.circle-container {
+    display: flex;
+    gap: 8px;
+    background: #111;
+    padding: 8px;
+    border-radius: 20px;
+    margin-right: 15px;
+}
+
+.circle {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    border: 2px solid #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    cursor: pointer;
+    user-select: none;
+    background: #333;
+}
+
+.circle.active {
+    background-color: var(--accent-color);
+    color: black;
+    border-color: #fff;
+    box-shadow: 0 0 8px var(--accent-color);
+}
+
+.circle.target {
+    border-color: #00ff00;
+}
+
+.edit-btn {
+    background: #444;
+    color: white;
+    margin-left: auto;
+}
+
+.edit-btn.active {
+    background: #00ff00;
+    color: black;
+}
+
+.dep-controls {
+    display: none;
+    gap: 5px;
+    margin-left: 15px;
+}
+
+.dep-btn {
+    width: 35px;
+    height: 30px;
+    padding: 0;
+    background: #444;
+    color: white;
+}
+
+.dep-btn.selected {
+    background: #33a6cc;
+    color: white;
+    font-weight: bold;
+}
+
+.lang-switch {
+    display: flex;
+    gap: 5px;
+    justify-content: flex-end;
+    margin-bottom: 15px;
+}
+
+.lang-btn {
+    background: #444;
+    color: white;
+    padding: 5px 10px;
+    font-size: 14px;
+    border-radius: 4px;
+}
+
+.lang-btn.active {
+    background-color: var(--accent-color);
+    color: black;
+}
+
+#output {
+    margin-top: 20px;
+    background: #111;
+    padding: 15px;
+    border-radius: 6px;
+    border-left: 4px solid var(--accent-color);
+    white-space: pre-wrap;
+    font-family: monospace;
+}
+
+#modeHint {
+    min-height: 24px;
+    margin-top: 12px;
+    color: #9fd3ff;
+    font-size: 14px;
+}
