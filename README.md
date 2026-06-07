@@ -13,8 +13,8 @@ The in-game minigame introduces a complex system of interconnected metal disks w
 * **Zero Dependencies:** Pure HTML, CSS, and vanilla JavaScript.
 
 ## 🚀 How to Use
-1. Clone or download this repository.
-2. Open the `gothic1_remake_lock_pick.html` file in any modern web browser.
+1. Clone or download this repository. The tool is also accessible via `https://winterhafen.github.io/gothic1_remake_lockpicker/`.
+2. Open the `index.html` file in any modern web browser.
 3. Enter the **number of disks** and click **"Generate Lock"**.
 4. Set the starting positions of the disks by clicking on the gold-accented numbers (the goal is position `4`).
 5. Click **"Set Dependency"** on a disk to configure how it affects other disks when rotated. Click **"Done"** when finished.
