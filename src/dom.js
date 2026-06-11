@@ -99,11 +99,17 @@ function renderModeHint(currentMasterIdx, currentLang, translations) {
     if (currentMasterIdx === null) {
         elements.modeHint.innerText = '';
         elements.solveBtn.disabled = false;
+        elements.playBtn.disabled = false;
+        elements.prevStepBtn.disabled = false;
+        elements.nextStepBtn.disabled = false;
         return;
     }
 
     elements.modeHint.innerText = translations[currentLang].editModeHint;
     elements.solveBtn.disabled = true;
+    elements.playBtn.disabled = true;
+    elements.prevStepBtn.disabled = true;
+    elements.nextStepBtn.disabled = true;
 }
 
 function groupSolutionSteps(solution) {
